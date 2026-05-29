@@ -1,0 +1,14 @@
+server:
+  host: "127.0.0.1"
+  port: 8080
+
+redis:
+  host: "127.0.0.1"
+  port: 6379
+  db: 0
+  stream_prefix: "cron:jobs"
+
+scheduler:
+  timezone: "Asia/Shanghai"
+  tick_seconds: 1.0
+  misfire_grace_seconds: 60

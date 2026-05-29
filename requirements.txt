@@ -1,0 +1,7 @@
+fastapi>=0.110.0
+uvicorn[standard]>=0.27.0
+nb-cron-nb[fastapi]>=0.1.0
+redis>=5.0.0
+pyyaml>=6.0
+pytest>=8.0.0
+fakeredis[lua]>=2.20.0
