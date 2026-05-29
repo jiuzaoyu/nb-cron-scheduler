@@ -9,6 +9,8 @@ COPY src/ src/
 COPY config/ config/
 COPY jobs/ jobs/
 
+ENV PYTHONPATH=/app/src
+
 EXPOSE 8088
 
 CMD ["python", "-m", "uvicorn", "src.app:app_factory", "--factory", "--host", "0.0.0.0", "--port", "8088"]
