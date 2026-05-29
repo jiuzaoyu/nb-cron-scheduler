@@ -1,9 +1,11 @@
 import json
 import tempfile
+import time
 from pathlib import Path
 
 import fakeredis
 import pytest
+import yaml
 from fastapi.testclient import TestClient
 
 
@@ -14,8 +16,6 @@ def redis_client():
 
 @pytest.fixture
 def app_with_fake_redis(redis_client, monkeypatch, tmp_path):
-    import yaml
-
     import src.app as app_module
 
     # Patch Redis to return fake client
@@ -66,35 +66,33 @@ def app_with_fake_redis(redis_client, monkeypatch, tmp_path):
 
 class TestHealthEndpoint:
     def test_health_returns_ok(self, app_with_fake_redis):
-        client = TestClient(app_with_fake_redis)
-        response = client.get("/health")
-        assert response.status_code == 200
-        data = response.json()
-        assert data["status"] == "ok"
-        assert "jobs" in data
+        with TestClient(app_with_fake_redis) as client:
+            response = client.get("/health")
+            assert response.status_code == 200
+            data = response.json()
+            assert data["status"] == "ok"
+            assert "jobs" in data
 
 
 class TestJobExecution:
     def test_manual_trigger_publishes_to_stream(self, app_with_fake_redis, redis_client):
-        from src.publisher import MessagePublisher
+        with TestClient(app_with_fake_redis) as client:
+            # Step 1: POST to the trigger endpoint to fire the job
+            # through the full chain (HTTP -> handler -> executor -> _fire -> publisher -> Redis)
+            response = client.post("/nb_cron/api/jobs/integration_test_job/trigger")
+            assert response.status_code == 200
+            data = response.json()
+            assert data["success"] is True
 
-        publisher = MessagePublisher(redis_client)
+            # Step 2: Wait briefly for the background thread to execute
+            time.sleep(0.5)
 
-        job_def = {
-            "name": "integration_test_job",
-            "stream": "cron:jobs:integration_test",
-            "timeout": 60,
-            "max_retries": 1,
-            "payload": {"job_type": "integration_test"},
-        }
+            # Step 3: Verify the message appeared in the (fake) Redis stream
+            messages = redis_client.xrange("cron:jobs:integration_test", "-", "+")
+            assert len(messages) == 1
 
-        msg_id = publisher.publish(job_def)
-        assert msg_id is not None
-
-        messages = redis_client.xrange("cron:jobs:integration_test", "-", "+")
-        assert len(messages) == 1
-
-        _, data = messages[0]
-        assert data["job_type"] == "integration_test"
-        assert data["timeout"] == "60"
-        assert json.loads(data["payload"]) == {"job_type": "integration_test"}
+            _, msg_data = messages[0]
+            assert msg_data["job_type"] == "integration_test"
+            assert msg_data["job_id"].startswith("integration_test_job:")
+            assert msg_data["timeout"] == "60"
+            assert json.loads(msg_data["payload"]) == {"job_type": "integration_test"}
