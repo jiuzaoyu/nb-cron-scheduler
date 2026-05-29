@@ -1,6 +1,6 @@
 from typing import Any
 
-from src.publisher import MessagePublisher
+from publisher import MessagePublisher
 
 
 def register_jobs(cron, publisher: MessagePublisher, job_defs: list[dict[str, Any]]) -> None:

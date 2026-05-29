@@ -8,9 +8,9 @@ from nb_cron import NbCron
 from nb_cron.web import get_fastapi_app
 from redis import Redis
 
-from src.config_loader import load_job_definitions, load_scheduler_config
-from src.job_registry import register_jobs
-from src.publisher import MessagePublisher
+from config_loader import load_job_definitions, load_scheduler_config
+from job_registry import register_jobs
+from publisher import MessagePublisher
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -29,6 +29,11 @@ def create_app(config_path: str | None = None, job_defs_path: str | None = None)
         db=redis_cfg["db"],
         decode_responses=True,
     )
+    try:
+        redis_client.ping()
+    except Exception as e:
+        print(f"[nb-cron] Redis 连接失败: {e}")
+        raise SystemExit(1)
     publisher = MessagePublisher(redis_client)
 
     sched_cfg = cfg["scheduler"]
