@@ -1,10 +1,8 @@
-import json
-from unittest.mock import MagicMock, call
+from unittest.mock import MagicMock
 
 import pytest
 
 from src.job_registry import register_jobs
-from src.publisher import build_message
 
 
 class TestRegisterJobs:
