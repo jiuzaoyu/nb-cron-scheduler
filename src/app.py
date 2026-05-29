@@ -1,5 +1,6 @@
 from contextlib import asynccontextmanager
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 import uvicorn
 from fastapi import FastAPI
@@ -35,7 +36,7 @@ def create_app(config_path: str | None = None, job_defs_path: str | None = None)
         "nb-cron-scheduler",
         tick_seconds=sched_cfg.get("tick_seconds", 1.0),
         misfire_grace_seconds=sched_cfg.get("misfire_grace_seconds", 60),
-        tz=sched_cfg.get("timezone", "Asia/Shanghai"),
+        tz=ZoneInfo(sched_cfg.get("timezone", "Asia/Shanghai")),
     )
 
     register_jobs(cron, publisher, job_defs)

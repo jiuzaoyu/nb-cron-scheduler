@@ -15,6 +15,8 @@ def _register_one(cron, publisher: MessagePublisher, job_def: dict[str, Any]) ->
     def _fire():
         publisher.publish(job_def)
 
+    _fire.cron_func_name = job_name  # type: ignore[attr-defined]
+
     cron.add_job(
         _fire,
         expression=cron_expression,
