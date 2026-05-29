@@ -29,10 +29,12 @@ def create_app(config_path: str | None = None, job_defs_path: str | None = None)
     redis_cfg["db"] = int(os.getenv("REDIS_DB", redis_cfg["db"]))
 
     sched_cfg = cfg["scheduler"]
+    redis_password = os.getenv("REDIS_PASSWORD", None)
     redis_client = Redis(
         host=redis_cfg["host"],
         port=redis_cfg["port"],
         db=redis_cfg["db"],
+        password=redis_password,
         decode_responses=True,
     )
     try:
