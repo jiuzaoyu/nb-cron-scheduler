@@ -12,8 +12,8 @@ python src/app.py
 ```
 
 服务启动后：
-- Web UI: http://127.0.0.1:8080/nb_cron/ui/
-- Health: http://127.0.0.1:8080/health
+- Web UI: http://127.0.0.1:8088/nb_cron/ui/
+- Health: http://127.0.0.1:8088/health
 
 ## 添加 Job
 
@@ -54,7 +54,7 @@ jobs:
 ```yaml
 server:
   host: "127.0.0.1"
-  port: 8080
+  port: 8088
 
 redis:
   host: "127.0.0.1"
