@@ -1,3 +1,4 @@
+import os
 from contextlib import asynccontextmanager
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -23,6 +24,11 @@ def create_app(config_path: str | None = None, job_defs_path: str | None = None)
     job_defs = load_job_definitions(job_defs_path)
 
     redis_cfg = cfg["redis"]
+    redis_cfg["host"] = os.getenv("REDIS_HOST", redis_cfg["host"])
+    redis_cfg["port"] = int(os.getenv("REDIS_PORT", redis_cfg["port"]))
+    redis_cfg["db"] = int(os.getenv("REDIS_DB", redis_cfg["db"]))
+
+    sched_cfg = cfg["scheduler"]
     redis_client = Redis(
         host=redis_cfg["host"],
         port=redis_cfg["port"],
@@ -36,7 +42,6 @@ def create_app(config_path: str | None = None, job_defs_path: str | None = None)
         raise SystemExit(1)
     publisher = MessagePublisher(redis_client)
 
-    sched_cfg = cfg["scheduler"]
     cron = NbCron(
         "nb-cron-scheduler",
         tick_seconds=sched_cfg.get("tick_seconds", 1.0),
@@ -59,6 +64,11 @@ def create_app(config_path: str | None = None, job_defs_path: str | None = None)
         return {"status": "ok", "jobs": len(job_defs)}
 
     return app, cfg
+
+
+def app_factory():
+    app, _ = create_app()
+    return app
 
 
 def main():
