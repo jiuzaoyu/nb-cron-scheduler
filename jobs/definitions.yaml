@@ -15,10 +15,10 @@ jobs:
     timeout: 900
     max_retries: 2
 
-  - name: screener_intraday
+  - name: nav_estimation
     cron: "0 30 14 * * 1-5"
-    stream: "cron:jobs:screener_intraday"
+    stream: "cron:jobs:nav_estimation"
     payload:
-      job_type: "screener_intraday"
+      job_type: "nav_estimation"
     timeout: 300
     max_retries: 2
