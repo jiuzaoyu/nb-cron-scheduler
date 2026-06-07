@@ -16,7 +16,7 @@ jobs:
     max_retries: 2
 
   - name: nav_estimation
-    cron: "0 30 14 * * 1-5"
+    cron: "0 25 15 * * *"
     stream: "cron:jobs:nav_estimation"
     payload:
       job_type: "nav_estimation"
