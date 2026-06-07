@@ -2,10 +2,10 @@ services:
   app:
     build: .
     ports:
-      - "8088:8088"
+      - "9088:9088"
     environment:
       - REDIS_HOST=${REDIS_HOST:-127.0.0.1}
-      - REDIS_PORT=${REDIS_PORT:-6379}
+      - REDIS_PORT=${REDIS_PORT:-36379}
       - REDIS_DB=${REDIS_DB:-0}
       - REDIS_PASSWORD=${REDIS_PASSWORD:-}
     restart: unless-stopped
