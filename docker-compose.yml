@@ -4,7 +4,7 @@ services:
     ports:
       - "9088:9088"
     environment:
-      - REDIS_HOST=${REDIS_HOST:-127.0.0.1}
+      - REDIS_HOST=${REDIS_HOST:-host.docker.internal}
       - REDIS_PORT=${REDIS_PORT:-36379}
       - REDIS_DB=${REDIS_DB:-0}
       - REDIS_PASSWORD=${REDIS_PASSWORD:-}
