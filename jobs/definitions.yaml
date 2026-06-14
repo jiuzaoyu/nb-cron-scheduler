@@ -6,9 +6,9 @@
 #   timeout:     任务超时时间，单位秒，超时后任务会被终止
 #   max_retries: 最大重试次数，任务失败后的重试上限
 jobs:
-  - name: fund_incremental
+  - name: 每日净值增量更新
     cron: "0 30 16 * * 1-5"
-    stream: "cron:jobs:fund_incremental"
+    stream: "cron:jobs:fund_queue_1"
     payload:
       job_type: "fund_incremental"
     timeout: 600
@@ -16,15 +16,15 @@ jobs:
 
   - name: 基金列表刷新
     cron: "0 01 6 * * 1"
-    stream: "cron:jobs:fund_list_refresh"
+    stream: "cron:jobs:fund_queue_1"
     payload:
       job_type: "fund_list_refresh"
     timeout: 900
     max_retries: 2
 
-  - name: nav_estimation
+  - name: 每日净值估算
     cron: "0 25 15 * * *"
-    stream: "cron:jobs:nav_estimation"
+    stream: "cron:jobs:fund_queue_1"
     payload:
       job_type: "nav_estimation"
     timeout: 300
