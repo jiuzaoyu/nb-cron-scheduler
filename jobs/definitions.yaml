@@ -14,8 +14,8 @@ jobs:
     timeout: 600
     max_retries: 3
 
-  - name: fund_list_refresh
-    cron: "0 30 17 * * 5"
+  - name: 基金列表刷新
+    cron: "0 01 6 * * 1"
     stream: "cron:jobs:fund_list_refresh"
     payload:
       job_type: "fund_list_refresh"
@@ -30,10 +30,3 @@ jobs:
     timeout: 300
     max_retries: 2
 
-  - name: 全量更新基金列表
-    cron: "0 25 15 * * *"
-    stream: "cron:jobs:updat_fund"
-    payload:
-      job_type: "update_all_fund"
-    timeout: 300
-    max_retries: 2
