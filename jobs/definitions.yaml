@@ -1,3 +1,10 @@
+# 字段说明:
+#   name:        任务名称，唯一标识
+#   cron:        cron 表达式，定义任务触发时间规则 (分 时 日 月 星期)
+#   stream:      Redis stream key，消息发布与接收的通道
+#   payload:     任务载荷，传递给执行器的业务参数
+#   timeout:     任务超时时间，单位秒，超时后任务会被终止
+#   max_retries: 最大重试次数，任务失败后的重试上限
 jobs:
   - name: fund_incremental
     cron: "0 30 16 * * 1-5"
@@ -20,5 +27,13 @@ jobs:
     stream: "cron:jobs:nav_estimation"
     payload:
       job_type: "nav_estimation"
+    timeout: 300
+    max_retries: 2
+
+  - name: 全量更新基金列表
+    cron: "0 25 15 * * *"
+    stream: "cron:jobs:updat_fund"
+    payload:
+      job_type: "update_all_fund"
     timeout: 300
     max_retries: 2

@@ -44,6 +44,10 @@ def create_app(config_path: str | None = None, job_defs_path: str | None = None)
         raise SystemExit(1)
     publisher = MessagePublisher(redis_client)
 
+    # 调度器名称: "nb-cron-scheduler"
+    # tick_seconds:          时钟精度，每秒检查一次到期任务
+    # misfire_grace_seconds: 错过补偿窗口，超时未触发的任务不再补触发
+    # tz:                    时区
     cron = NbCron(
         "nb-cron-scheduler",
         tick_seconds=sched_cfg.get("tick_seconds", 1.0),
@@ -51,6 +55,9 @@ def create_app(config_path: str | None = None, job_defs_path: str | None = None)
         tz=ZoneInfo(sched_cfg.get("timezone", "Asia/Shanghai")),
     )
 
+    # cron:      调度器
+    # publisher: 消息发布器，将任务消息写入 Redis Stream
+    # job_defs:  job 定义列表，含 name/cron/params 等字段
     register_jobs(cron, publisher, job_defs)
 
     @asynccontextmanager
