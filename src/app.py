@@ -72,6 +72,14 @@ def create_app(config_path: str | None = None, job_defs_path: str | None = None)
     def health():
         return {"status": "ok", "jobs": len(job_defs)}
 
+    @app.post("/jobs/{job_name}/trigger")
+    def trigger_job(job_name: str):
+        for job_def in job_defs:
+            if job_def["name"] == job_name:
+                msg_id = publisher.publish(job_def)
+                return {"status": "triggered", "job_name": job_name, "message_id": msg_id}
+        return {"status": "not_found", "job_name": job_name}, 404
+
     return app, cfg
 
 

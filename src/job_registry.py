@@ -5,6 +5,8 @@ from publisher import MessagePublisher
 
 def register_jobs(cron, publisher: MessagePublisher, job_defs: list[dict[str, Any]]) -> None:
     for job_def in job_defs:
+        if not job_def.get("cron"):
+            continue
         _register_one(cron, publisher, job_def)
 
 

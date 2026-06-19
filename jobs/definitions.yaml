@@ -1,6 +1,6 @@
 # 字段说明:
 #   name:        任务名称，唯一标识
-#   cron:        cron 表达式，定义任务触发时间规则 (分 时 日 月 星期)
+#   cron:        (可选) cron 表达式，定义任务触发时间规则 (分 时 日 月 星期)，不填则仅可手动触发
 #   stream:      Redis stream key，消息发布与接收的通道
 #   payload:     任务载荷，传递给执行器的业务参数
 #   timeout:     任务超时时间，单位秒，超时后任务会被终止
@@ -27,6 +27,13 @@ jobs:
     stream: "cron:jobs:fund_queue_1"
     payload:
       job_type: "nav_estimation"
+    timeout: 300
+    max_retries: 2
+  
+  - name: 基金历史数据采集
+    stream: "cron:jobs:fund_queue_1"
+    payload:
+      job_type: "fund_history_full"
     timeout: 300
     max_retries: 2
 
