@@ -30,11 +30,11 @@ jobs:
     timeout: 300
     max_retries: 2
   
-  - name: 基金历史数据采集
-    cron: "0 25 15 * * *"
+  - name: 基金历史净值采集
+    cron: "0 0 31 2 * *"
     stream: "cron:jobs:fund_queue_1"
     payload:
-      job_type: "fund_history_full"
+      job_type: "fund_history_nav_refresh"
     timeout: 300
     max_retries: 2
 
