@@ -31,7 +31,7 @@ jobs:
     max_retries: 2
   
   - name: 基金历史净值采集
-    cron: "0 0 31 2 * *"
+    cron: "0 0 0 31 2 *"
     stream: "cron:jobs:fund_queue_1"
     payload:
       job_type: "fund_history_nav_refresh"
@@ -45,7 +45,6 @@ jobs:
       job_type: "fund_manager_refresh"
     timeout: 300
     max_retries: 2
-
 
   - name: 基金持仓数据采集【全量】
     cron: "0 0 2 1 * *"
