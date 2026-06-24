@@ -54,3 +54,34 @@ jobs:
     timeout: 300
     max_retries: 2
 
+  - name: 股票列表同步
+    cron: "0 30 5 * * 1"
+    stream: "cron:jobs:stock_queue_1"
+    payload:
+      job_type: "stock_list_sync"
+    timeout: 900
+    max_retries: 2
+
+  - name: 每日股票增量采集
+    cron: "0 0 16 * * 1-5"
+    stream: "cron:jobs:stock_queue_1"
+    payload:
+      job_type: "stock_daily_collect"
+    timeout: 600
+    max_retries: 3
+
+  - name: 股票历史数据补齐
+    cron: "0 0 0 28 2 *"
+    stream: "cron:jobs:stock_queue_1"
+    payload:
+      job_type: "stock_history_collect"
+    timeout: 3600
+    max_retries: 2
+
+  - name: 单股采集
+    stream: "cron:jobs:stock_queue_1"
+    payload:
+      job_type: "stock_collect_single"
+    timeout: 600
+    max_retries: 2
+
